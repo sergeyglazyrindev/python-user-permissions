@@ -23,13 +23,13 @@ class PermissionManager(object):
         return GroupUserManager.get_users_by_group(self.__on_str(on_id), *args, **kwargs)
 
     def add_user_to_group(self, on_id, *args):
-        return UserManager.add_user_to_group(self.__on_str(on_id), *args)
+        return UserManager.add_to_group(self.__on_str(on_id), *args)
 
     def remove_user_from_groups(self, on_id, *args):
-        return UserManager.remove_user_from_groups(self.__on_str(on_id), *args)
+        return UserManager.remove_from_group(self.__on_str(on_id), *args)
 
     def user_groups(self, on_id, *args):
-        return UserManager.user_groups(self.__on_str(on_id), *args)
+        return UserManager.groups(self.__on_str(on_id), *args)
 
     def user_has_permissions(self, on_id, *args):
         return UserManager.has_permissions(self.__on_str(on_id), *args)
@@ -58,7 +58,7 @@ class GroupUserManager(ConnectionHandler):
         '''
         group_id = group_config.get_group_id_by_name(group_id_or_group_name)
         group_key = cls.get_key(group_id, on)
-        return map(int, cls._redis.smembers(group_key)[:num])
+        return list(map(int, list(cls._redis().smembers(group_key))[:num]))
 
 
 class UserManager(ConnectionHandler):
@@ -84,9 +84,9 @@ class UserManager(ConnectionHandler):
         '''
         if isinstance(groups, (int, str)):
             groups = [str(groups), ]
-        groups = map(group_config.get_group_id_by_name, groups)
+        groups = list(map(group_config.get_group_id_by_name, groups))
         redis_key = cls.get_key(user_id, on)
-        pipeline = cls._redis.pipeline()
+        pipeline = cls._redis().pipeline()
         pipeline.sadd(redis_key, *groups)
         for group in groups:
             group_key = GroupUserManager.get_key(group, on)
@@ -108,9 +108,9 @@ class UserManager(ConnectionHandler):
         '''
         if isinstance(groups, (int, str)):
             groups = [str(groups), ]
-        groups = map(group_config.get_group_id_by_name, groups)
+        groups = list(map(group_config.get_group_id_by_name, groups))
         redis_key = cls.get_key(user_id, on)
-        pipeline = cls._redis.pipeline()
+        pipeline = cls._redis().pipeline()
         pipeline.srem(redis_key, *groups)
         for group in groups:
             group_key = GroupUserManager.get_key(group, on)
@@ -131,7 +131,7 @@ class UserManager(ConnectionHandler):
         Returns: bool
         '''
         permissions = set(map(str.lower, permissions))
-        u_groups = cls.user_groups(on, user_id)
+        u_groups = cls.groups(on, user_id)
         for group in u_groups:
             permissions -= group_config.get_permissions_for_group(group)
             if not permissions:
@@ -139,7 +139,7 @@ class UserManager(ConnectionHandler):
         return not len(permissions)
 
     @classmethod
-    def user_groups(cls, on, user_id):
+    def groups(cls, on, user_id):
         '''
         .. warnings: Never use this method directly. It needs configured use on parameter
         Args:
@@ -150,4 +150,4 @@ class UserManager(ConnectionHandler):
         Returns: list of integers
         '''
         redis_key = cls.get_key(user_id, on)
-        return map(int, cls._redis.smembers(redis_key))
+        return list(map(int, cls._redis().smembers(redis_key)))
