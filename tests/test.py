@@ -33,28 +33,28 @@ class TestPackage(TestCase):
     def test(self):
 
         on_kwargs = {'on_id': test_on_id}
-        self.assertEquals(
+        self.assertEqual(
             list(permission_manager.get_users_by_group('admin', **on_kwargs)),
             []
         )
 
         permission_manager.add_user_to_group(test_user_id, 'admin', **on_kwargs)
 
-        self.assertEquals(
+        self.assertEqual(
             list(permission_manager.get_users_by_group('admin', **on_kwargs)),
             [20, ]
         )
 
         permission_manager.remove_user_from_groups(test_user_id, 'admin', **on_kwargs)
 
-        self.assertEquals(
+        self.assertEqual(
             list(permission_manager.get_users_by_group('admin', **on_kwargs)),
             []
         )
 
         permission_manager.add_user_to_group(test_user_id, 'admin', **on_kwargs)
 
-        self.assertEquals(
+        self.assertEqual(
             list(permission_manager.user_groups(test_user_id, **on_kwargs)),
             [1, ]
         )

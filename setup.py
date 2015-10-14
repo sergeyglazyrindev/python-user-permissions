@@ -33,5 +33,6 @@ setup(
         'testing': ['nose', 'mock'],
     },
     test_suite='tests',
-    install_requires=['redis==2.10.3', ]
+    install_requires=['redis==2.10.3', 'redis-beautified-ext==0.1'],
+    dependency_links=['http://github.com/sergeyglazyrindev/redissimplified/blob/master#egg=redis-beautified-ext==0.1']
 )
