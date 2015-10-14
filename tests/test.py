@@ -32,40 +32,41 @@ class TestPackage(TestCase):
 
     def test(self):
 
+        on_kwargs = {'on_id': test_on_id}
         self.assertEquals(
-            list(permission_manager.get_users_by_group(test_on_id, 'admin')),
+            list(permission_manager.get_users_by_group('admin', **on_kwargs)),
             []
         )
 
-        permission_manager.add_user_to_group(test_on_id, test_user_id, 'admin')
+        permission_manager.add_user_to_group(test_user_id, 'admin', **on_kwargs)
 
         self.assertEquals(
-            list(permission_manager.get_users_by_group(test_on_id, 'admin')),
+            list(permission_manager.get_users_by_group('admin', **on_kwargs)),
             [20, ]
         )
 
-        permission_manager.remove_user_from_groups(test_on_id, test_user_id, 'admin')
+        permission_manager.remove_user_from_groups(test_user_id, 'admin', **on_kwargs)
 
         self.assertEquals(
-            list(permission_manager.get_users_by_group(test_on_id, 'admin')),
+            list(permission_manager.get_users_by_group('admin', **on_kwargs)),
             []
         )
 
-        permission_manager.add_user_to_group(test_on_id, test_user_id, 'admin')
+        permission_manager.add_user_to_group(test_user_id, 'admin', **on_kwargs)
 
         self.assertEquals(
-            list(permission_manager.user_groups(test_on_id, test_user_id)),
+            list(permission_manager.user_groups(test_user_id, **on_kwargs)),
             [1, ]
         )
 
-        self.assertTrue(permission_manager.user_has_permissions(test_on_id, test_user_id, ['test', ]))
+        self.assertTrue(permission_manager.user_has_permissions(test_user_id, ['test', ], **on_kwargs))
 
         self.assertTrue(not permission_manager.user_has_permissions(
-            test_on_id,
             test_user_id,
-            ['test', 'guestwriter1'])
-        )
+            ['test', 'guestwriter1'],
+            **on_kwargs
+        ))
 
-        permission_manager.add_user_to_group(test_on_id, test_user_id, 'guest_writer')
+        permission_manager.add_user_to_group(test_user_id, 'guest_writer', **on_kwargs)
 
-        self.assertTrue(permission_manager.user_has_permissions(test_on_id, test_user_id, ['test', 'guestwriter1']))
+        self.assertTrue(permission_manager.user_has_permissions(test_user_id, ['test', 'guestwriter1'], **on_kwargs))

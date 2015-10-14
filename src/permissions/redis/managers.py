@@ -12,7 +12,7 @@ class PermissionManager(object):
     def __on_str(self, on_id):
         return '{}_{}'.format(self.on, on_id)
 
-    def get_users_by_group(self, on_id, *args, **kwargs):
+    def get_users_by_group(self, *args, on_id='', **kwargs):
         '''
         Look for documentation for :class:`GroupUserManager.get_users_by_group`
         Args:
@@ -22,16 +22,16 @@ class PermissionManager(object):
         '''
         return GroupUserManager.get_users_by_group(self.__on_str(on_id), *args, **kwargs)
 
-    def add_user_to_group(self, on_id, *args):
+    def add_user_to_group(self, *args, on_id=''):
         return UserManager.add_to_group(self.__on_str(on_id), *args)
 
-    def remove_user_from_groups(self, on_id, *args):
+    def remove_user_from_groups(self, *args, on_id=''):
         return UserManager.remove_from_group(self.__on_str(on_id), *args)
 
-    def user_groups(self, on_id, *args):
+    def user_groups(self, *args, on_id=''):
         return UserManager.groups(self.__on_str(on_id), *args)
 
-    def user_has_permissions(self, on_id, *args):
+    def user_has_permissions(self, *args, on_id=''):
         return UserManager.has_permissions(self.__on_str(on_id), *args)
 
 
