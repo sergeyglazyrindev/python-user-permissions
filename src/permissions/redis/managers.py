@@ -126,10 +126,11 @@ class UserManager(ConnectionHandler):
             :type on: str|id
             :param user_id: User id
             :type user_id: int
-            :param permissions: list of permissions
-            :type groups: list of strings
+            :param permissions: set of permissions
+            :type groups: set of strings
         Returns: bool
         '''
+        permissions = set(map(str.lower, permissions))
         u_groups = cls.user_groups(on, user_id)
         for group in u_groups:
             permissions -= group_config.get_permissions_for_group(group)

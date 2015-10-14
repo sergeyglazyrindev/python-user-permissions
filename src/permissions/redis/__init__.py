@@ -1,7 +1,7 @@
-__all__ = ['GroupConfiguration', 'ConnectionHandler']
+__all__ = ['group_config', 'ConnectionHandler']
 
 from .connection import ConnectionHandler
-from .configuration import GroupConfiguration
+from .configuration import group_config
 
 from .managers import PermissionManager
 
