@@ -12,4 +12,11 @@ class ConnectionHandler(RedisConnectionHandler):
 
     @classmethod
     def configure_connection(cls, connection):
+        '''
+        Accepts dictionary with keys needed to connect to the redis: host, post, db
+        Args:
+            :param connection: dictionary with keys: host, port, db
+            :type connection: dict
+        Returns: None
+        '''
         cls.connection = connection
